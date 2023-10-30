@@ -7,7 +7,7 @@ import pandas
 import streamlit as st
 
 import src.youtube as step_1
-import src.assembly step_2
+import src.assembly as step_2
 
 aai.settings.api_key = st.secrets["ASSEMBLYAI_TOKEN"]
 openai.api_key = st.secrets["OPENAI_API_KEY"]
