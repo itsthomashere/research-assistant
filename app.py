@@ -29,8 +29,7 @@ def main() -> None:
 
     with col2:
         st.info("ChatGPT and text area block goes here.")
-        st.text_input("Instruction")
-        st.chat_input("Instruction:")
+        st.text_input("Instruction:")
         st.text_area("Enter a paragraph you want transformed from the passage on the left side of the screen.", height=200)
 
 if __name__ == "__main__":
