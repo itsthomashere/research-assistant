@@ -31,7 +31,10 @@ def main() -> None:
 
         if video_url and generate:
             with st.spinner("Generating"):
-                step_1.save_audio(video_url)
+                video_title, save_location, thumbnail_url = step1.save_audio(video_url)
+                st.header(video_title)
+                st.image(thumbnail_url)
+                st.audio(save_location)
 
 
     with col2:
