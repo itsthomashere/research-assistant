@@ -37,6 +37,9 @@ def main() -> None:
                 st.audio(save_location)
                 st.write(save_location)
 
+                transcriber = aai.Transcriber()
+                transcript = transcriber.transcribe(save_location)
+                st.write(transcript.text)
 
     with col2:
         st.info("ChatGPT and text area block goes here.")
