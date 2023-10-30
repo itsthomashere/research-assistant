@@ -28,7 +28,7 @@ def main() -> None:
         st.info("YouTube / AssemblyAI stuff goes here")
         st.header("The Science of Storytelling")
 
-        with open("./transcript.md", "r") as file
+        with open("./transcript.md", "r") as file:
             transcript = file.read()
 
         st.write(transcript)
