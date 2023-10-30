@@ -35,6 +35,7 @@ def main() -> None:
                 st.header(video_title)
                 st.image(thumbnail_url)
                 st.audio(save_location)
+                st.write(save_location)
 
 
     with col2:
