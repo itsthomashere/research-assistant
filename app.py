@@ -50,8 +50,15 @@ def main() -> None:
 
             questions = [
                 aai.LemurQuestion(
+                question="Is this caller a qualified buyer?",
+                answer_options=[
+                        "Yes",
+                        "No"
+                    ]),
+                aai.LemurQuestion(
                 question=user_input,
-                answer_format="Short sentence")]
+                answer_format="Short sentence")
+            ]
 
             result = transcript.lemur.question(questions)
             st.write(result)
