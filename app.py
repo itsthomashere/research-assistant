@@ -26,6 +26,12 @@ def main() -> None:
 
     with col1:
         st.info("YouTube / AssemblyAI stuff goes here")
+        st.header("The Science of Storytelling")
+
+        with open("./transcript.md", "r") as file
+            transcript = file.read()
+
+        st.write(transcript)
 
     with col2:
         st.info("ChatGPT and text area block goes here.")
