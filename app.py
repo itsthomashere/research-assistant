@@ -26,12 +26,13 @@ def main() -> None:
 
     with col1:
         st.info("YouTube / AssemblyAI stuff goes here")
-        st.header("The Science of Storytelling")
+        video_url = st.text_input("Enter a URL:")
+        generate = st.button("Generate!")
 
-        with open("./transcript.md", "r") as file:
-            transcript = file.read()
+        if video_url and generate:
+            with st.spinner("Generating"):
+                step_1.save_audio(video_url)
 
-        st.write(transcript)
 
     with col2:
         st.info("ChatGPT and text area block goes here.")
