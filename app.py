@@ -43,25 +43,8 @@ def main() -> None:
 
     with col2:
         st.info("ChatGPT and text area block goes here.")
-        user_input = st.text_input("Ask a Yes / No question about the transcript.")
+        user_input = st.text_input("Instruction:")
         st.text_area("Enter a paragraph you want transformed from the passage on the left side of the screen.", height=200)
-
-        if user_input is not None:
-
-            questions = [
-                aai.LemurQuestion(
-                question="Is this caller a qualified buyer?",
-                answer_options=[
-                        "Yes",
-                        "No"
-                    ]),
-                aai.LemurQuestion(
-                question=user_input,
-                answer_format="Short sentence")
-            ]
-
-            result = transcript.lemur.question(questions)
-            st.write(result)
 
 if __name__ == "__main__":
     main()
