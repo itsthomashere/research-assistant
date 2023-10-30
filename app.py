@@ -9,6 +9,14 @@ import streamlit as st
 aai.settings.api_key = st.secrets["ASSEMBLYAI_TOKEN"]
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
+
+st.set_page_config(
+        page_title="Research Assistant",
+        page_icon="🤖",
+        layout="wide"
+        )
+
+
 def main() -> None:
     st.title("AI Research Assistant")
     col1, col2 = st.columns([2, 1])
