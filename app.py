@@ -37,8 +37,15 @@ def main() -> None:
                 st.audio(save_location)
                 st.write(save_location)
 
-                transcriber = aai.Transcriber()
+                config = aai.TranscriptionConfig(auto_highlights=True)
+                transcriber = aai.Transcriber(config=config)
+
                 transcript = transcriber.transcribe(save_location)
+
+                st.markdown("### Highlights")
+                for result in transcript.auto_highlights.results:
+                    st.write(f"Highlight: {result.text}, Count: {result.count}, Rank: {result.rank}, Timestamps: {result.timestamps}")
+
                 st.write(transcript.text)
 
     with col2:
