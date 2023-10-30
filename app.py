@@ -26,7 +26,7 @@ def main() -> None:
 
     with col1:
         st.info("YouTube / AssemblyAI stuff goes here")
-        video_url = st.text_input("Enter a URL:")
+        video_url = st.text_input("Enter a URL:", "https://www.youtube.com/watch?v=BYHaqE81WlA&pp=ygUQYXNzZW1ibHlhaSBsZW11cg%3D%3D")
         generate = st.button("Generate!")
 
         if video_url and generate:
