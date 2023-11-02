@@ -257,7 +257,7 @@ def main():
             answer = qa.run(user_question)
             st.write("Answer:", answer)
 
-        questions_list = [qa_pair['answer'] for qa_pair in st.session_state.eval_set]
+        questions_list = [qa_pair['question'] for qa_pair in st.session_state.eval_set]
         answers_list = [qa_pair['answer'] for qa_pair in st.session_state.eval_set]
 
        # Store the initial value of widgets in session state
