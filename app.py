@@ -235,7 +235,7 @@ def main():
         callback_manager = CallbackManager([callback_handler])
 
         chat_openai = ChatOpenAI(
-            streaming=True, callback_manager=callback_manager, verbose=True, temperature=0.4)
+            streaming=True, chat_model="gpt-4", callback_manager=callback_manager, verbose=True, temperature=0.4)
         qa = RetrievalQA.from_chain_type(llm=chat_openai, retriever=retriever, chain_type="stuff", verbose=True)
 
         # Check if there are no generated question-answer pairs in the session state
