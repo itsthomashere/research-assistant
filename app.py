@@ -274,7 +274,7 @@ def main():
             st.session_state.disabled = False
 
         sample_question = st.selectbox(
-        "How would you like to be contacted?",
+            "AI-Generated Questions:",
             questions_list,
         label_visibility=st.session_state.visibility,
         disabled=st.session_state.disabled,
