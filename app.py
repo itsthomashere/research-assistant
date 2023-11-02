@@ -86,7 +86,7 @@ def generate_eval(text, N, chunk):
     n = len(text)
     starting_indices = [random.randint(0, n-chunk) for _ in range(N)]
     sub_sequences = [text[i:i+chunk] for i in starting_indices]
-    chain = QAGenerationChain.from_llm(ChatOpenAI(model_name="gpt-4", temperature=0.4))
+    chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0.4))
     eval_set = []
     for i, b in enumerate(sub_sequences):
         try:
@@ -235,7 +235,7 @@ def main():
         callback_manager = CallbackManager([callback_handler])
 
         chat_openai = ChatOpenAI(
-            streaming=True, model_name="gpt-4", callback_manager=callback_manager, verbose=True, temperature=0.4)
+            streaming=True, callback_manager=callback_manager, verbose=True, temperature=0.4)
         qa = RetrievalQA.from_chain_type(llm=chat_openai, retriever=retriever, chain_type="stuff", verbose=True)
 
         # Check if there are no generated question-answer pairs in the session state
@@ -257,14 +257,10 @@ def main():
             answer = qa.run(user_question)
             st.write("Answer:", answer)
 
-        questions_list = [qa_pair['question'] for i, qa_pair in enumerate(st.session_state.eval_set)]
-        answers_list = [qa_pair['answer'] for i, qa_pair in enumerate(st.session_state.eval_set)]
-#        sample_question = st.selectbox(
-#            ' ',
-#            questions_list,
-#            index=None,
-#            placeholder="Select sample question...")
-        # Store the initial value of widgets in session state
+        questions_list = [qa_pair['answer'] for qa_pair in st.session_state.eval_set]
+        answers_list = [qa_pair['answer'] for qa_pair in st.session_state.eval_set]
+
+       # Store the initial value of widgets in session state
         if "visibility" not in st.session_state:
             st.session_state.visibility = "visible"
             st.session_state.disabled = False
