@@ -86,7 +86,7 @@ def generate_eval(text, N, chunk):
     n = len(text)
     starting_indices = [random.randint(0, n-chunk) for _ in range(N)]
     sub_sequences = [text[i:i+chunk] for i in starting_indices]
-    chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0.4))
+    chain = QAGenerationChain.from_llm(ChatOpenAI(model_name="gpt-4", temperature=0.4))
     eval_set = []
     for i, b in enumerate(sub_sequences):
         try:
@@ -227,10 +227,6 @@ def main():
             # Embed using OpenAI embeddings or HuggingFace embeddings
 #        if embedding_option == "OpenAI Embeddings":
         embeddings = OpenAIEmbeddings()
-#        elif embedding_option == "HuggingFace Embeddings(slower)":
-            # Replace "bert-base-uncased" with the desired HuggingFace model
-#            embeddings = HuggingFaceEmbeddings()
-
         retriever = create_retriever(embeddings, splits, retriever_type)
 
 
@@ -239,7 +235,7 @@ def main():
         callback_manager = CallbackManager([callback_handler])
 
         chat_openai = ChatOpenAI(
-            streaming=True, callback_manager=callback_manager, verbose=True, temperature=0.4)
+            streaming=True, model_name="gpt-4", callback_manager=callback_manager, verbose=True, temperature=0.4)
         qa = RetrievalQA.from_chain_type(llm=chat_openai, retriever=retriever, chain_type="stuff", verbose=True)
 
         # Check if there are no generated question-answer pairs in the session state
