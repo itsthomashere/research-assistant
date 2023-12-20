@@ -21,7 +21,7 @@ st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
 
 
 def create_table() -> None:
-    conn = st.experimental_connection("digitalocean", type="sql")
+    conn = st.connection("digitalocean", type="sql")
     with conn.session as s:
         # Create the 'knowledge_base' table with specified columns
         s.execute(text("""
@@ -31,7 +31,6 @@ def create_table() -> None:
                     page_no BIGINT NOT NULL,
                     chunk_no BIGINT NOT NULL,
                     text_chunk TEXT NOT NULL1);"""))
-
 
 @st.cache_data
 def load_docs(files):
