@@ -88,6 +88,7 @@ def generate_eval(text, N, chunk):
     sub_sequences = [text[i:i+chunk] for i in starting_indices]
     chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0.4))
     eval_set = []
+    st.write(sub_sequences)
     for i, b in enumerate(sub_sequences):
         try:
             qa = chain.run(b)
