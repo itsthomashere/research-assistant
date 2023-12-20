@@ -21,7 +21,7 @@ st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
 
 
 def create_table() -> None:
-    conn = st.experimental_connection("digitalocean", type="sql")
+    conn = st.experimentalconnection("digitalocean", type="sql")
     with conn.session as s:
         # Create the 'knowledge_base' table with specified columns
         s.execute(text("""
