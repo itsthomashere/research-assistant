@@ -19,6 +19,20 @@ from langchain.embeddings import HuggingFaceEmbeddings
 
 st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
 
+
+def create_table() -> None:
+    conn = st.connection("digitalocean", type="sql")
+    with conn.session as s:
+        # Create the 'knowledge_base' table with specified columns
+        s.execute(text("""
+                    CREATE TABLE IF NOT EXISTS knowledge_base (
+                    id UUID PRIMARY KEY,
+                    title VARCHAR() NOT NULL,
+                    page_no BIGINT NOT NULL,
+                    chunk_no BIGINT NOT NULL,
+                    text_chunk TEXT NOT NULL1);"""))
+
+
 @st.cache_data
 def load_docs(files):
     st.info("`Reading doc ...`")
@@ -38,8 +52,6 @@ def load_docs(files):
         else:
             st.warning('Please provide txt or pdf.', icon="⚠️")
     return all_text
-
-
 
 
 @st.cache_resource
@@ -161,19 +173,12 @@ def main():
             div.css-1kyxreq {margin-top: -40px;
             }
             
-           
-       
-            
-          
 
         </style>
         """,
         unsafe_allow_html=True,
     )
-#    st.sidebar.image("img/logo1.png")
 
-
-   
 
     st.write(
     f"""
@@ -186,12 +191,8 @@ def main():
         )
     
     
-
-
-    
-    
-    
 #    embedding_option = "OpenAIEmbeddings"
+    create_table()
 
     embeddings = OpenAIEmbeddings()
 
