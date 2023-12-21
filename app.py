@@ -27,7 +27,7 @@ def create_table() -> None:
         s.execute(text("""
                     CREATE TABLE IF NOT EXISTS knowledge_base (
                     id UUID PRIMARY KEY,
-                    title VARCHAR() NOT NULL,
+                    title VARCHAR(255) NOT NULL,
                     page_no BIGINT NOT NULL,
                     chunk_no BIGINT NOT NULL,
                     text_chunk TEXT NOT NULL1);"""))
