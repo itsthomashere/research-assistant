@@ -17,20 +17,25 @@ from langchain.callbacks.manager import CallbackManager
 from langchain.embeddings import HuggingFaceEmbeddings
 
 
-st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
+st.set_page_config(page_title="PDF Analyzer", page_icon=":shark:")
 
 
 def create_table() -> None:
     conn = st.connection("digitalocean", type="sql")
     with conn.session as s:
         # Create the 'knowledge_base' table with specified columns
-        s.execute(text("""
+        s.execute(
+            text(
+                """
                     CREATE TABLE IF NOT EXISTS knowledge_base (
                     id UUID PRIMARY KEY,
                     title VARCHAR(255) NOT NULL,
                     page_no BIGINT NOT NULL,
                     chunk_no BIGINT NOT NULL,
-                    text_chunk TEXT NOT NULL);"""))
+                    text_chunk TEXT NOT NULL);"""
+            )
+        )
+
 
 @st.cache_data
 def load_docs(files):
@@ -49,7 +54,7 @@ def load_docs(files):
             text = stringio.read()
             all_text += text
         else:
-            st.warning('Please provide txt or pdf.', icon="⚠️")
+            st.warning("Please provide txt or pdf.", icon="⚠️")
     return all_text
 
 
@@ -67,9 +72,9 @@ def create_retriever(_embeddings, splits, retriever_type):
 
     return retriever
 
+
 @st.cache_resource
 def split_texts(text, chunk_size, overlap, split_method):
-
     # Split texts
     # IN: text, chunk size, overlap, split_method
     # OUT: list of str splits
@@ -78,7 +83,8 @@ def split_texts(text, chunk_size, overlap, split_method):
 
     split_method = "RecursiveTextSplitter"
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=chunk_size, chunk_overlap=overlap)
+        chunk_size=chunk_size, chunk_overlap=overlap
+    )
 
     splits = text_splitter.split_text(text)
     if not splits:
@@ -87,17 +93,17 @@ def split_texts(text, chunk_size, overlap, split_method):
 
     return splits
 
+
 @st.cache_data
 def generate_eval(text, N, chunk):
-
     # Generate N questions from context of chunk chars
     # IN: text, N questions, chunk size to draw question from in the doc
     # OUT: eval set as JSON list
 
     st.info("`Generating sample questions ...`")
     n = len(text)
-    starting_indices = [random.randint(0, n-chunk) for _ in range(N)]
-    sub_sequences = [text[i:i+chunk] for i in starting_indices]
+    starting_indices = [random.randint(0, n - chunk) for _ in range(N)]
+    sub_sequences = [text[i : i + chunk] for i in starting_indices]
     chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0.4))
     eval_set = []
     st.write(sub_sequences)
@@ -105,17 +111,17 @@ def generate_eval(text, N, chunk):
         try:
             qa = chain.run(b)
             eval_set.append(qa)
-            st.write("Creating Question:",i+1)
+            st.write("Creating Question:", i + 1)
         except:
-            st.warning('Error generating question %s.' % str(i+1), icon="⚠️")
+            st.warning("Error generating question %s." % str(i + 1), icon="⚠️")
     eval_set_full = list(itertools.chain.from_iterable(eval_set))
     return eval_set_full
 
 
 # ...
 
+
 def main():
-    
     foot = f"""
     <div style="
         position: fixed;
@@ -131,7 +137,7 @@ def main():
     """
 
     st.markdown(foot, unsafe_allow_html=True)
-    
+
     # Add custom CSS
     st.markdown(
         """
@@ -178,19 +184,17 @@ def main():
         unsafe_allow_html=True,
     )
 
-
     st.write(
-    f"""
+        f"""
     <div style="display: flex; align-items: center; margin-left: 0;">
         <h1 style="display: inline-block;">Hettie's Research Assistant</h1>
         <sup style="margin-left:5px;font-size:small; color: green;">beta</sup>
     </div>
     """,
-    unsafe_allow_html=True,
-        )
-    
-    
-#    embedding_option = "OpenAIEmbeddings"
+        unsafe_allow_html=True,
+    )
+
+    #    embedding_option = "OpenAIEmbeddings"
     create_table()
 
     embeddings = OpenAIEmbeddings()
@@ -200,56 +204,68 @@ def main():
     # Use RecursiveCharacterTextSplitter as the default and only text splitter
     splitter_type = "RecursiveCharacterTextSplitter"
 
-    if 'openai_api_key' not in st.session_state:
+    if "openai_api_key" not in st.session_state:
         st.session_state.openai_api_key = st.secrets["OPENAI_API_KEY"]
 
-    uploaded_files = st.file_uploader("Upload a PDF or TXT Document", type=[
-                                      "pdf", "txt"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader(
+        "Upload a PDF or TXT Document", type=["pdf", "txt"], accept_multiple_files=True
+    )
 
     if uploaded_files:
         # Check if last_uploaded_files is not in session_state or if uploaded_files are different from last_uploaded_files
-        if 'last_uploaded_files' not in st.session_state or st.session_state.last_uploaded_files != uploaded_files:
+        if (
+            "last_uploaded_files" not in st.session_state
+            or st.session_state.last_uploaded_files != uploaded_files
+        ):
             st.session_state.last_uploaded_files = uploaded_files
-            if 'eval_set' in st.session_state:
-                del st.session_state['eval_set']
+            if "eval_set" in st.session_state:
+                del st.session_state["eval_set"]
 
         # Load and process the uploaded PDF or TXT files.
         loaded_text = load_docs(uploaded_files)
         st.write("Documents uploaded and processed.")
 
         # Split the document into chunks
-        splits = split_texts(loaded_text, chunk_size=1000,
-                             overlap=200, split_method=splitter_type)
+        splits = split_texts(
+            loaded_text, chunk_size=1000, overlap=200, split_method=splitter_type
+        )
 
         # Display the number of text chunks
         num_chunks = len(splits)
         st.write(f"Number of text chunks: {num_chunks}")
 
         # Embed using OpenAI embeddings
-            # Embed using OpenAI embeddings or HuggingFace embeddings
-#        if embedding_option == "OpenAI Embeddings":
+        # Embed using OpenAI embeddings or HuggingFace embeddings
+        #        if embedding_option == "OpenAI Embeddings":
         embeddings = OpenAIEmbeddings()
         retriever = create_retriever(embeddings, splits, retriever_type)
-
 
         # Initialize the RetrievalQA chain with streaming output
         callback_handler = StreamingStdOutCallbackHandler()
         callback_manager = CallbackManager([callback_handler])
 
         chat_openai = ChatOpenAI(
-            streaming=True, model_name="gpt-4", callback_manager=callback_manager, verbose=True, temperature=0.4)
-        qa = RetrievalQA.from_chain_type(llm=chat_openai, retriever=retriever, chain_type="stuff", verbose=True)
+            streaming=True,
+            model_name="gpt-4",
+            callback_manager=callback_manager,
+            verbose=True,
+            temperature=0.4,
+        )
+        qa = RetrievalQA.from_chain_type(
+            llm=chat_openai, retriever=retriever, chain_type="stuff", verbose=True
+        )
 
         # Check if there are no generated question-answer pairs in the session state
-        if 'eval_set' not in st.session_state:
+        if "eval_set" not in st.session_state:
             # Use the generate_eval function to generate question-answer pairs
             num_eval_questions = 10  # Number of question-answer pairs to generate
             st.session_state.eval_set = generate_eval(
-                loaded_text, num_eval_questions, 3000)
+                loaded_text, num_eval_questions, 3000
+            )
 
-       # Display the question-answer pairs in the sidebar with smaller text
-#        for i, qa_pair in enumerate(st.session_state.eval_set):
-#            st.sidebar.markdown(qa_pair['question'])
+        # Display the question-answer pairs in the sidebar with smaller text
+        #        for i, qa_pair in enumerate(st.session_state.eval_set):
+        #            st.sidebar.markdown(qa_pair['question'])
 
         st.divider()
         st.header("Ready to answer questions.")
@@ -259,10 +275,10 @@ def main():
             answer = qa.run(user_question)
             st.write("Answer:", answer)
 
-        questions_list = [qa_pair['question'] for qa_pair in st.session_state.eval_set]
-        answers_list = [qa_pair['answer'] for qa_pair in st.session_state.eval_set]
+        questions_list = [qa_pair["question"] for qa_pair in st.session_state.eval_set]
+        answers_list = [qa_pair["answer"] for qa_pair in st.session_state.eval_set]
 
-       # Store the initial value of widgets in session state
+        # Store the initial value of widgets in session state
         if "visibility" not in st.session_state:
             st.session_state.visibility = "visible"
             st.session_state.disabled = False
@@ -270,9 +286,9 @@ def main():
         sample_question = st.selectbox(
             "AI-Generated Questions:",
             questions_list,
-        label_visibility=st.session_state.visibility,
-        disabled=st.session_state.disabled,
-    )
+            label_visibility=st.session_state.visibility,
+            disabled=st.session_state.disabled,
+        )
 
         if sample_question:
             st.header(sample_question)
