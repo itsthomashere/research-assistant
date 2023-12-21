@@ -58,15 +58,40 @@ def load_docs(files):
     return all_text
 
 
+# @st.cache_resource
+# def create_retriever(_embeddings, splits, retriever_type):
+#     if retriever_type == "SIMILARITY SEARCH":
+#         try:
+#             vectorstore = FAISS.from_texts(splits, _embeddings)
+#         except (IndexError, ValueError) as e:
+#             st.error(f"Error creating vectorstore: {e}")
+#             return
+#         retriever = vectorstore.as_retriever(k=5)
+#     elif retriever_type == "SUPPORT VECTOR MACHINES":
+#         retriever = SVMRetriever.from_texts(splits, _embeddings)
+
+#     return retriever
+
+from annoy import AnnoyIndex
+
+
 @st.cache_resource
 def create_retriever(_embeddings, splits, retriever_type):
     if retriever_type == "SIMILARITY SEARCH":
         try:
-            vectorstore = FAISS.from_texts(splits, _embeddings)
+            # Assuming _embeddings is a 2D array-like object
+            f = len(_embeddings[0])  # Length of item vector that will be indexed
+            t = AnnoyIndex(
+                f, "angular"
+            )  # Length of item vector that will be indexed and metric
+            for i, v in enumerate(_embeddings):
+                t.add_item(i, v)
+            t.build(10)  # 10 trees
+            vectorstore = t
         except (IndexError, ValueError) as e:
             st.error(f"Error creating vectorstore: {e}")
             return
-        retriever = vectorstore.as_retriever(k=5)
+        retriever = vectorstore
     elif retriever_type == "SUPPORT VECTOR MACHINES":
         retriever = SVMRetriever.from_texts(splits, _embeddings)
 
