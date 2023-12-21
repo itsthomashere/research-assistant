@@ -30,7 +30,7 @@ def create_table() -> None:
                     title VARCHAR(255) NOT NULL,
                     page_no BIGINT NOT NULL,
                     chunk_no BIGINT NOT NULL,
-                    text_chunk TEXT NOT NULL1);"""))
+                    text_chunk TEXT NOT NULL);"""))
 
 @st.cache_data
 def load_docs(files):
