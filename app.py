@@ -5,7 +5,8 @@ import itertools
 import streamlit as st
 from sqlalchemy import create_engine, text
 from io import StringIO
-from langchain.vectorstores import FAISS
+
+# from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.retrievers import SVMRetriever
