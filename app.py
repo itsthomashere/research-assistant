@@ -112,10 +112,9 @@ def generate_eval(text, N, chunk):
             qa = chain.run(b)
             eval_set.append(qa)
             st.write("Creating Question:", i + 1)
-        except:
-            st.warning("Error generating question %s." % str(i + 1), icon="⚠️")
-    eval_set_full = list(itertools.chain.from_iterable(eval_set))
-    return eval_set_full
+        except Exception:
+            st.warning(f"Error generating question {str(i + 1)}.", icon="⚠️")
+    return list(itertools.chain.from_iterable(eval_set))
 
 
 # ...
